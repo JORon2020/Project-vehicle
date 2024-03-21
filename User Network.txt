@@ -1,0 +1,135 @@
+-- Table for User Demographics
+CREATE TABLE user_demographics (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    location VARCHAR(100),
+    language VARCHAR(50)
+);
+
+-- Table for Device Information
+CREATE TABLE device_information (
+    device_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    device_type VARCHAR(50),
+    device_model VARCHAR(100),
+    screen_resolution VARCHAR(20),
+    operating_system VARCHAR(50),
+    browser VARCHAR(50),
+    FOREIGN KEY (user_id) REFERENCES user_demographics(user_id)
+);
+
+-- Table for Session Information
+CREATE TABLE session_information (
+    session_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    session_duration INT, -- in seconds
+    session_start_time TIMESTAMP,
+    session_end_time TIME,
+    session_paths TEXT,
+    entry_page VARCHAR(255),
+    exit_page VARCHAR(255),
+    session_counts INT,
+    FOREIGN KEY (user_id) REFERENCES user_demographics(user_id)
+);
+
+-- Table for Page Views
+CREATE TABLE page_views (
+    page_view_id INT AUTO_INCREMENT PRIMARY KEY,
+    session_id INT,
+    page_url VARCHAR(255),
+    time_spent_on_page INT, -- in seconds
+    page_navigation_path TEXT,
+    FOREIGN KEY (session_id) REFERENCES session_information(session_id)
+);
+
+-- Table for User Actions
+CREATE TABLE user_actions (
+    action_id INT AUTO_INCREMENT PRIMARY KEY,
+    session_id INT,
+    form_submission_time TIMESTAMP,
+    FOREIGN KEY (session_id) REFERENCES session_information(session_id)
+);
+
+-- Table for Referral Source
+CREATE TABLE referral_source (
+    referral_id INT AUTO_INCREMENT PRIMARY KEY,
+    session_id INT,
+    referral_url VARCHAR(255),
+    search_engine VARCHAR(50),
+    social_media_platform VARCHAR(50),
+    direct_traffic BOOLEAN,
+    FOREIGN KEY (session_id) REFERENCES session_information(session_id)
+);
+
+-- Table for Engagement Metrics
+CREATE TABLE engagement_metrics (
+    engagement_id INT AUTO_INCREMENT PRIMARY KEY,
+    session_id INT,
+    time_on_site INT, -- in seconds
+    bounce_rate DECIMAL(5,2),
+    scroll_depth INT, -- in pixels
+    interactions_per_visit INT,
+    FOREIGN KEY (session_id) REFERENCES session_information(session_id)
+);
+
+-- Table for Behavioral Patterns
+CREATE TABLE behavioral_patterns (
+    pattern_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    recurring_visits BOOLEAN,
+    time_of_day_pattern VARCHAR(50),
+    day_of_week_pattern VARCHAR(50),
+    seasonal_trend VARCHAR(50),
+    FOREIGN KEY (user_id) REFERENCES user_demographics(user_id)
+);
+
+-- Table for Session Duration Metrics
+CREATE TABLE session_duration_metrics (
+    duration_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    average_session_duration INT, -- in seconds
+    median_session_duration INT, -- in seconds
+    longest_session_duration INT, -- in seconds
+    shortest_session_duration INT, -- in seconds
+    FOREIGN KEY (user_id) REFERENCES user_demographics(user_id)
+);
+
+-- Table for User Interests
+CREATE TABLE user_interests (
+    interest_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    page_visited VARCHAR(255),
+    content_viewed VARCHAR(255),
+    products_browsed VARCHAR(255),
+    FOREIGN KEY (user_id) REFERENCES user_demographics(user_id)
+);
+
+-- Table for Errors
+CREATE TABLE errors (
+    error_id INT AUTO_INCREMENT PRIMARY KEY,
+    session_id INT,
+    javascript_error BOOLEAN,
+    broken_link BOOLEAN,
+    page_not_found BOOLEAN,
+    FOREIGN KEY (session_id) REFERENCES session_information(session_id)
+);
+
+-- Table for Network Performance
+CREATE TABLE network_performance (
+    performance_id INT AUTO_INCREMENT PRIMARY KEY,
+    session_id INT,
+    page_load_time INT, -- in milliseconds
+    dns_resolution_time INT, -- in milliseconds
+    server_response_time INT, -- in milliseconds
+    network_latency INT, -- in milliseconds
+    FOREIGN KEY (session_id) REFERENCES session_information(session_id)
+);
+
+-- Table for Resource Utilization
+CREATE TABLE resource_utilization (
+    utilization_id INT AUTO_INCREMENT PRIMARY KEY,
+    cpu_usage DECIMAL(5,2), -- Percentage
+    memory_usage DECIMAL(5,2), -- Percentage
+    disk_io DECIMAL(10,2), -- Assuming bytes
+    network_bandwidth DECIMAL(10,2), -- Assuming bytes
+    server_uptime INT -- In seconds
+);
